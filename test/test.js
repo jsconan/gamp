@@ -42,6 +42,7 @@ define(['QUnit', 'gamp'], function (QUnit, gamp) {
 
             QUnit.test('gamp', function (assert) {
                 var checks = [
+                    {number: 42, precision: 1},
                     {number: 0.1, precision: 10},
                     {number: 0.123, precision: 1000},
                     {number: 1.333339, precision: 1000000},
@@ -56,6 +57,7 @@ define(['QUnit', 'gamp'], function (QUnit, gamp) {
 
             QUnit.test('add', function (assert) {
                 var checks = [
+                    {left: 3, right: 4, result: 7},
                     {left: 0.1, right: 0.2, result: 0.3},
                     {left: 4.52, right: 4.49, result: 9.01},
                     {left: 76.65, right: 38.45, result: 115.1},
@@ -70,6 +72,7 @@ define(['QUnit', 'gamp'], function (QUnit, gamp) {
 
             QUnit.test('sub', function (assert) {
                 var checks = [
+                    {left: 17, right: 11, result: 6},
                     {left: 0.1, right: 0.1, result: 0},
                     {left: 4.52, right: 4.49, result: 0.03},
                     {left: 10.21, right: 10.2, result: 0.01},
@@ -84,6 +87,7 @@ define(['QUnit', 'gamp'], function (QUnit, gamp) {
 
             QUnit.test('mul', function (assert) {
                 var checks = [
+                    {left: 6, right: 7, result: 42},
                     {left: 0.1, right: 0.2, result: 0.02},
                     {left: 1.11, right: 5, result: 5.55},
                     {left: 10, right: 2332226616, result: 23322266160},
@@ -98,6 +102,7 @@ define(['QUnit', 'gamp'], function (QUnit, gamp) {
 
             QUnit.test('div', function (assert) {
                 var checks = [
+                    {left: 77, right: 7, result: 11},
                     {left: 0.1, right: 0.2, result: 0.5},
                     {left: 1.11, right: 5, result: 0.222},
                     {left: 123.456, right: 3.14, result: 39.3171974522293},
@@ -107,6 +112,22 @@ define(['QUnit', 'gamp'], function (QUnit, gamp) {
                 assert.expect(checks.length);
                 checks.forEach(function (check) {
                     assert.equal(gamp.div(check.left, check.right), check.result, 'The result of ' + check.left + ' / ' + check.right + ' is ' + check.result);
+                });
+            });
+
+            QUnit.test('pow', function (assert) {
+                var checks = [
+                    {left: 2, right: 4, result: 16},
+                    {left: 10, right: 3, result: 1000},
+                    {left: 3.14, right: 3, result: 30.959144},
+                    {left: 3.14, right: 1.2, result: 3.947440364606883},
+                    {left: 2.2, right: 1, result: 2.2},
+                    {left: 2.2, right: 0, result: 1}
+                ];
+
+                assert.expect(checks.length);
+                checks.forEach(function (check) {
+                    assert.equal(gamp.pow(check.left, check.right), check.result, 'The result of ' + check.left + ' ^ ' + check.right + ' is ' + check.result);
                 });
             });
         }

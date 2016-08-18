@@ -117,6 +117,24 @@
             return translate(a, factor) / translate(b, factor);
         };
 
+        /**
+         * Computes the power of a decimal value
+         * @param {number} a
+         * @param {number} b
+         * @returns {number}
+         */
+        gamp.pow = function pow (a, b) {
+            var ga = gamp(a);
+            var ta = translate(a, ga);
+            var ib = Math.floor(b);
+            var fb = b - ib;
+            var res = ib ? Math.pow(ta, ib) / Math.pow(ga, ib) : 1;
+            if (fb) {
+                res = gamp.div(gamp.mul(res, Math.pow(ta, fb)), Math.pow(ga, fb));
+            }
+            return res;
+        };
+
         return gamp;
     });
 })(this, 'gamp');

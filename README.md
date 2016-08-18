@@ -11,5 +11,6 @@ The API is pretty simple:
 - `gamp.sub(left, right)`: returns the result of the subtraction of the right operand from the left operand
 - `gamp.mul(left, right)`: returns the results of the multiplication of the left operand by the right operand
 - `gamp.div(left, right)`: returns the results of the division of the left operand by the right operand
-- `gamp(value)`: will simply returns the approcahed precision of the provided decimal number. This precision is the decimal factor to translate the decimal value into an integer.
+- `gamp.pow(left, right)`: returns the results of the power of the left operand by the right operand
+- `gamp(value)`: will simply returns the approached precision of the provided decimal number. This precision is the decimal factor to translate the decimal value into an integer.
 
