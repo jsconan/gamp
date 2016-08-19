@@ -1,5 +1,5 @@
 /**
- * Gamp v0.2.0 - A simple arithmetic API with workaround to floating-point issue
+ * Gamp v0.2.1 - A simple arithmetic API with workaround to floating-point issue
  *
  * https://github.com/jsconan/gamp
  *
@@ -66,11 +66,11 @@
         /**
          * Adjusts the number of digits to prevent round-off error
          * @param {number} val
-         * @param {number} [precision=16]
+         * @param {number} [digits=16]
          * @returns {number}
          */
-        gamp.round = function round(val, precision) {
-            return Number(Number(val).toPrecision('undefined' === typeof precision ? 16 : precision));
+        gamp.round = function round(val, digits) {
+            return Number(Number(val).toPrecision('undefined' === typeof digits ? 16 : digits));
         };
 
         /**

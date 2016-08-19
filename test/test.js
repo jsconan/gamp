@@ -1,5 +1,5 @@
 /**
- * Gamp v0.2.0 - A simple arithmetic API with workaround to floating-point issue
+ * Gamp v0.2.1 - A simple arithmetic API with workaround to floating-point issue
  *
  * https://github.com/jsconan/gamp
  *
