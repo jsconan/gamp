@@ -1,6 +1,6 @@
 {
   "name": "gamp",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "author": "jsconan",
   "description": "Provide a four operations calculator API with workaround for the common floating-point issue",
   "keywords": ["floating-point", "calculator", "calc", "four operations", "arithmetic"],

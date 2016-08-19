@@ -1,27 +1,10 @@
 /**
- * MIT License
- *
- * Copyright (c) 2016 Jean-Sébastien CONAN
+ * Gamp v0.1.0 - A simple arithmetic API with workaround to floating-point issue
  *
  * https://github.com/jsconan/gamp
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * Copyright (c) 2016 Jean-Sébastien CONAN
+ * Released under the MIT license.
  */
 (function (global, alias) {
     'use strict';
@@ -42,18 +25,32 @@
 
     define(function () {
         /**
-         * Computes the approached precision for a decimal number.
-         * This precision will be then used as a correction factor to translate the value to an integer notation
+         * Computes the precision of a decimal number.
+         * This precision will be then used as a correction factor to normalize
+         * the value in order to prevent the floating-point round error.
          * @param {number} val
          * @returns {number}
          */
-        function gamp(val) {
+        function precision(val) {
             var digits = String(val);
             var point = digits.indexOf('.');
-            if (point < 0) {
-                return 1;
+            return point < 0 ? 1 : Math.pow(10, digits.length - point - 1);
+        }
+
+        /**
+         * Computes the approached precision for a list of decimal numbers.
+         * This precision will be then used as a correction factor to normalize
+         * the values in order to prevent the floating-point round error.
+         * @param {number} ...
+         * @returns {number}
+         */
+        function gamp() {
+            var i = arguments.length - 1;
+            var factor = -Infinity;
+            while (i >= 0) {
+                factor = Math.max(factor, precision(arguments[i--]));
             }
-            return Math.pow(10, digits.length - point - 1);
+            return Math.abs(factor);
         }
 
         /**
@@ -62,9 +59,19 @@
          * @param {number} factor
          * @returns {number}
          */
-        function translate(val, factor) {
-            return Math.round(factor * parseFloat(val));
-        }
+        gamp.normalize = function normalize(val, factor) {
+            return Math.round(factor * Number(val));
+        };
+
+        /**
+         * Formats a number to prevent round-off error
+         * @param {number} val
+         * @param {number} [precision=16]
+         * @returns {number}
+         */
+        gamp.format = function format(val, precision) {
+            return Number(Number(val).toPrecision('undefined' === typeof precision ? 16 : precision));
+        };
 
         /**
          * Computes the addition of two decimal values
@@ -73,10 +80,8 @@
          * @returns {number}
          */
         gamp.add = function add(a, b) {
-            var ga = gamp(a);
-            var gb = gamp(b);
-            var factor = ga * gb;
-            return (translate(a, factor) + translate(b, factor)) / factor;
+            var factor = gamp(a, b);
+            return gamp.format((gamp.normalize(a, factor) + gamp.normalize(b, factor)) / factor);
         };
 
         /**
@@ -86,10 +91,8 @@
          * @returns {number}
          */
         gamp.sub = function sub(a, b) {
-            var ga = gamp(a);
-            var gb = gamp(b);
-            var factor = ga * gb;
-            return (translate(a, factor) - translate(b, factor)) / factor;
+            var factor = gamp(a, b);
+            return gamp.format((gamp.normalize(a, factor) - gamp.normalize(b, factor)) / factor);
         };
 
         /**
@@ -99,9 +102,8 @@
          * @returns {number}
          */
         gamp.mul = function mul(a, b) {
-            var ga = gamp(a);
-            var gb = gamp(b);
-            return (translate(a, ga) * translate(b, gb)) / (ga * gb);
+            var factor = gamp(a, b);
+            return gamp.format((gamp.normalize(a, factor) * gamp.normalize(b, factor)) / (factor * factor), 15);
         };
 
         /**
@@ -111,10 +113,8 @@
          * @returns {number}
          */
         gamp.div = function div(a, b) {
-            var ga = gamp(a);
-            var gb = gamp(b);
-            var factor = ga * gb;
-            return translate(a, factor) / translate(b, factor);
+            var factor = gamp(a, b);
+            return gamp.format(gamp.normalize(a, factor) / gamp.normalize(b, factor));
         };
 
         /**
@@ -123,16 +123,16 @@
          * @param {number} b
          * @returns {number}
          */
-        gamp.pow = function pow (a, b) {
-            var ga = gamp(a);
-            var ta = translate(a, ga);
+        gamp.pow = function pow(a, b) {
+            var factor = gamp(a);
+            var ta = gamp.normalize(a, factor);
             var ib = Math.floor(b);
             var fb = b - ib;
-            var res = ib ? Math.pow(ta, ib) / Math.pow(ga, ib) : 1;
+            var res = ib ? Math.pow(ta, ib) / Math.pow(factor, ib) : 1;
             if (fb) {
-                res = gamp.div(gamp.mul(res, Math.pow(ta, fb)), Math.pow(ga, fb));
+                res = gamp.div(gamp.mul(res, Math.pow(ta, fb)), Math.pow(factor, fb));
             }
-            return res;
+            return gamp.format(res, 15);
         };
 
         return gamp;
