@@ -12,7 +12,7 @@ The API is pretty simple:
 - `gamp.mul(left, right)`: returns the results of the multiplication of the left operand by the right operand
 - `gamp.div(left, right)`: returns the results of the division of the left operand by the right operand
 - `gamp.pow(left, right)`: returns the results of the power of the left operand by the right operand
-- `gamp.normalize(value, factor)`: returns the rounded value normalized by a factor
-- `gamp.format(value, [precision=16])`: returns the value formatted to an arbitrary precision (default 16)
-- `gamp(value1, value2, ..., valueN)`: will simply returns the common precision of the provided decimal numbers. This precision is the decimal factor needed to normalize the values in order to prevent the floating-point round error.
+- `gamp.normalize(value, factor)`: normalizes the value by a factor and rounds it
+- `gamp.round(value, [precision=16])`: rounds a value to a particular number of digits (default 16)
+- `gamp(value1, value2, ..., valueN)`: computes the shared precision of the provided decimal numbers. This precision is the decimal factor needed to normalize the values in order to prevent the floating-point round-off error.
 
